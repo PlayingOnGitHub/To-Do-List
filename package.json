@@ -1,0 +1,26 @@
+{
+  "name": "to-do-list",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PlayingOnGitHub/To-Do-List.git"
+  },
+  "author": "Joey",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PlayingOnGitHub/To-Do-List/issues"
+  },
+  "homepage": "https://github.com/PlayingOnGitHub/To-Do-List#readme",
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "babel-loader": "^8.1.0",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  }
+}
