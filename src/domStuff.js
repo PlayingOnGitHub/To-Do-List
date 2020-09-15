@@ -5,7 +5,7 @@ import * as deleteData from "./deleteData.js";
 import * as getData from "./getData.js";
 
 function loadStartingPage() {
-    
+    console.log(addData.toDoItem("JoeyTitle", "badass", "noDueDate", "alwaysAPriority", "kickAssProjectName") );
 };
 
 function renderProjects(updatedProjectInformationFromDeletedProjectAddedProjectOrUpdatedProject) {
@@ -16,6 +16,7 @@ function renderProjects(updatedProjectInformationFromDeletedProjectAddedProjectO
 function renderCurrentProject(projectInformation) {
     /* display to do's and their details for this project... project name.. etc... 
        todos could have a brief description across a single line.. stacked vertically */
+       
 }
 
 function displayToDoListDropDownFromSelectedProject(dataFromProjectThatWasClicked) {

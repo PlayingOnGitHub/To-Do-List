@@ -1,19 +1,24 @@
 import {pubSub} from "./pubSub.js";
 import * as getData from "./getData.js";
 
-function data() {
-    let projectOrToDoData = this;
-    let title = projectOrToDoData.title;
-    if ( localStorage.getItem(title) ) {
-         localStorage.removeItem(title);
-         pubSub.publish("delete", projectOrToDoData );
+function toDoItem(toDoData) {
+    let storageTitle = `${toDoData.projectName}-${toDoData.title}`;
+    if (!localStorage.getItem(storageTitle)) {
+        pubSub.publish("failed-to-delete-to-do-item", toDoData );
+        console.log("Failed to delete to do item. Item may already be deleted");
     }
     else {
-        pubSub.publish("delete-failed", projectOrToDoData );
-        console.log("nothing to delete");
+        localStorage.removeItem(storageTitle);
+        pubSub.publish("deleted-to-do-item", toDoData );
+        console.log("Deleted to do item");
     }
 };
 
+function project(projectData) {
+    
+}
+
 export {
-    data
+    toDoItem,
+    project
 };

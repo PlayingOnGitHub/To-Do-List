@@ -1,38 +1,67 @@
 import {pubSub} from "./pubSub.js";
+import * as saveData from "./saveData.js";
+import * as deleteData from "./deleteData.js"
 
-function createToDo( date, priority, title, description, futureData ) {
-    date = "trial";
-    priority = "trial";
-    title = "trial";
-    description = "trial";
-    let toDo = {
-        date: date,
-        priority: priority,
-        title: title,
-        description: description
-    };
-    /* keeps this fairly open to extension.. Can add another prototype to the existing prototype */
-    if ( futureData != null && futureData != undefined && futureData != "" ) { /* and typeof futureData == "object" ... literal ??? */
-        return Object.assign(toDo, futureData);
-    }
-    return toDo;
-}
+/* this is just me practicing higher level concepts.
+   Most of this isn't really needed */
 
-function saveToDoList(toDoObject) {
-    if (!localStorage.getItem(toDoObject.title) ) {
-        localStorage.setItem( toDoObject.title, JSON.stringify(toDoObject) );
-        pubSub.publish( "addToDoList", toDoObject );
+let toDoInterface = (toDoData) => ({
+    type: "to-do-interface",
+    save: () => toDoData.save(toDoData),
+    delete: () => toDoData.delete(toDoData)
+});
+
+let projectInterface = (projectData) => ({
+    type: "project-interface",
+    save: () => projectData.save(projectData),
+    delete: () => projectData.delete(projectData)
+});
+
+let toDoItem = (title, description, dueDate, priority, projectName) => {
+    let myProperties = {
+        title,
+        description,
+        dueDate,
+        priority,
+        projectName,
+        type: "to-do-item",
+        save(toDoData) {
+            saveData.toDoItem(myProperties);
+        },
+        delete(toDoData) {
+            deleteData.toDoItem(toDoData);
+        }
     }
-    else {
-        console.log("already added");
-    }
+    let implemented = toDoInterface(myProperties);
+    let newProto = Object.create(implemented);
+    return Object.assign( newProto, 
+        {
+            title, 
+            description, 
+            dueDate, 
+            priority, 
+            projectName 
+        }
+    );
 };
 
-function toDoList( date, priority, title, description, futureData ) {
-    let toDoObject = createToDo( date, priority, title, description, futureData );
-    saveToDoList(toDoObject);
+let project = (name) => {
+    let myProperties = {
+        name: name,
+        type: "project",
+        toDoLists: [],
+        save(projectData) {
+            saveData.project(projectData);
+        },
+        delete(projectData) {
+            deleteData.project(projectData);
+        }
+    }
+    let implemented = projectInterface(myProperties);
+    let newProto = Object.create(implemented);
+    return Object.assign( newProto, {name}, myProperties.toDoLists );
 }
 
 export {
-    toDoList
+    toDoItem
 };
