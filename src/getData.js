@@ -4,7 +4,8 @@ function project(projectData) {
     let projectTitle = projectData.title || projectData;
     let data = localStorage.getItem(projectTitle);
     if ( data ) {
-        return true;
+        let decryptedData = JSON.parse(data);
+        return decryptedData;
     }
     return false;
 };
@@ -22,7 +23,7 @@ function toDoItem(toDoData) {
     let toDoArray = decryptedData.toDoLists;
     let toDo = toDoArray.find( (arrayItem) => arrayItem.title == toDoTitle );
     if ( toDo ) {
-        return true;
+        return decryptedData;
     }
     return false;
 }
