@@ -7,61 +7,56 @@ import * as deleteData from "./deleteData.js"
 
 let toDoInterface = (toDoData) => ({
     type: "to-do-interface",
-    save: () => toDoData.save(toDoData),
-    delete: () => toDoData.delete(toDoData)
+    save: () => toDoData.save(),
+    delete: () => toDoData.delete()
 });
 
 let projectInterface = (projectData) => ({
     type: "project-interface",
-    save: () => projectData.save(projectData),
-    delete: () => projectData.delete(projectData)
+    save: () => projectData.save(),
+    delete: () => projectData.delete()
 });
 
-let toDoItem = (title, description, dueDate, priority, projectName) => {
+let toDoItem = (title, description, dueDate, priority, projectTitle) => {
     let myProperties = {
         title,
         description,
         dueDate,
         priority,
-        projectName,
+        projectTitle,
         type: "to-do-item",
-        save(toDoData) {
+    };
+    let storageMixins = {
+        save() {
             saveData.toDoItem(myProperties);
         },
-        delete(toDoData) {
-            deleteData.toDoItem(toDoData);
+        delete() {
+            deleteData.toDoItem(myProperties);
         }
-    }
-    let implemented = toDoInterface(myProperties);
-    let newProto = Object.create(implemented);
-    return Object.assign( newProto, 
-        {
-            title, 
-            description, 
-            dueDate, 
-            priority, 
-            projectName 
-        }
-    );
+    };
+    let implemented = toDoInterface({...storageMixins, ...myProperties});
+    return Object.assign(Object.create(implemented), myProperties);
 };
 
-let project = (name) => {
+let project = (title) => {
     let myProperties = {
-        name: name,
+        title,
         type: "project",
-        toDoLists: [],
-        save(projectData) {
-            saveData.project(projectData);
+        toDoLists: []
+    };
+    let storageMixins = {
+        save() {
+            saveData.project(myProperties);
         },
-        delete(projectData) {
-            deleteData.project(projectData);
+        delete() {
+            deleteData.project(myProperties);
         }
-    }
-    let implemented = projectInterface(myProperties);
-    let newProto = Object.create(implemented);
-    return Object.assign( newProto, {name}, myProperties.toDoLists );
+    };
+    let implemented = projectInterface({...myProperties, ...storageMixins})
+    return Object.assign(Object.create(implemented), myProperties);
 }
 
 export {
-    toDoItem
+    toDoItem,
+    project
 };

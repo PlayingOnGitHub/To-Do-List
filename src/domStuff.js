@@ -5,7 +5,9 @@ import * as deleteData from "./deleteData.js";
 import * as getData from "./getData.js";
 
 function loadStartingPage() {
-    console.log(addData.toDoItem("JoeyTitle", "badass", "noDueDate", "alwaysAPriority", "kickAssProjectName") );
+    console.log(addData.project("projectName"));
+    console.log(addData.toDoItem("toDoTitle", "coolDescription", "noDueDate", "alwaysAPriority", "projectName"));
+    console.log(addData.toDoItem("newToDo", "coolDescription", "noDueDate", "alwaysAPriority", "projectName"));
 };
 
 function renderProjects(updatedProjectInformationFromDeletedProjectAddedProjectOrUpdatedProject) {
