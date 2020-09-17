@@ -3,7 +3,6 @@ import * as getData from "./getData.js";
 
 function toDoItem(toDoData) {
     let data = getData.toDoItem(toDoData);
-    console.log(data);
     if (data) {
         let projectArray = data.toDoLists;
         data.toDoLists = projectArray.filter( (toDoItem) => {

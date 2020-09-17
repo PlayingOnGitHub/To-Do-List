@@ -1,13 +1,10 @@
 import {pubSub} from "./pubSub.js";
 import * as create from "./create.js";
 import * as addData from "./addData.js";
-import * as deleteData from "./deleteData.js";
-import * as getData from "./getData.js";
+import * as updateData from "./updateData.js";
 
 function loadStartingPage() {
-    console.log(addData.project("projectName"));
-    console.log(addData.toDoItem("toDoTitle", "coolDescription", "noDueDate", "alwaysAPriority", "projectName"));
-    console.log(addData.toDoItem("newToDo", "coolDescription", "noDueDate", "alwaysAPriority", "projectName"));
+    
 };
 
 function renderProjects(updatedProjectInformationFromDeletedProjectAddedProjectOrUpdatedProject) {
