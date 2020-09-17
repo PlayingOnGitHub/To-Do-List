@@ -22,8 +22,83 @@
     display: inline-block;
     font-size: 23px;
     color: #c0ebff;
-    margin-left: 20px;
+    margin-right: 25px;
     font-weight: 600;
+}
+
+.add-item-icon {
+    height: 50px;
+    width: 29px;
+    position: relative;
+    margin-left: 25px;
+}
+
+.action-items {
+    height: 50px;
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.rect1 {
+    width: 22px;
+    height: 3px;
+    background-color: white;
+    transform: translate(-50%, -50%) rotate(90deg);
+    left: 15px;
+    top: 25px;
+    position: absolute;
+    border: none;
+    border-color: transparent;
+    border-radius: 1.5px;
+}
+
+.rect2 {
+    background-color: white;
+    transform: translate(-50%, -50%);
+    left: 15px;
+    top: 25px;
+    position: absolute;
+    border: none;
+    border-color: transparent;
+    border-radius: 1.5px;
+    width: 22px;
+    height: 3px;
+}
+
+.add-item-icon:hover .rect1, .add-item-icon:hover .rect2 {
+    background-color: #0e554c;
+}
+
+.add-item-icon:hover {
+    cursor: pointer;
+}
+
+.notification-icon {
+    height: 50px;
+    width: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 25px;
+}
+
+.notification-circle {
+    width: 14px;
+    height: 14px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    margin-top: 1px;
+}
+
+.notification-icon:hover .notification-circle {
+    background-color: #0e554c;
+}
+
+.notification-icon:hover {
+    cursor: pointer;
 }
 
 body {
