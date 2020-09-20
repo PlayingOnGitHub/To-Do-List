@@ -184,8 +184,14 @@ h1.projects-header {
     cursor: pointer;
 }
 
-.project:hover a {
+.project-link:hover, .to-do-link:hover {
     color: #f1f1f1;
+}
+
+.project-icon-wrapper {
+    display: inline-block;
+    width: 37px;
+    height: 19px;
 }
 
 main {
