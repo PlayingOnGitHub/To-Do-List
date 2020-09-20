@@ -4,7 +4,7 @@
 }
 
 .banner {
-    background-color: #0892d1;
+    background-color: #173c09;
     width: 100vw;
     height: 50px;
     display: flex;
@@ -21,7 +21,7 @@
     margin-inline-end: auto;
     display: inline-block;
     font-size: 23px;
-    color: #c0ebff;
+    color: #f1f1f1;
     margin-right: 25px;
     font-weight: 600;
 }
@@ -103,4 +103,266 @@
 
 body {
     margin: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.wrap-page {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    align-items: stretch;
+}
+
+header {
+    flex: 0 1 auto;
+}
+
+.below-header-wrapper {
+    width: 100%;
+    height: 100%;
+    flex: 1 1 auto;
+    display: flex;
+    flex-flow: row;
+}
+
+.side-bar {
+    background-color: #48683c;
+    width: 330px;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+h1.projects-header {
+    text-align: center;
+    font-size: 27px;
+    color: #f1f1f1;
+    margin-block-start: auto;
+    margin-block-end: auto;
+    font-weight: bold;
+}
+
+.projects-header-wrapper {
+    margin: 0 auto;
+    margin: 15px 0 0 0;
+}
+
+.projects-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.projects-wrapper a {
+    color: black;
+    line-height: 29px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.project-icon {
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: white;
+    display: inline-block;
+    margin-left: 15px;
+    margin-right: 10px;
+}
+
+.project a {
+    text-decoration: none;
+}
+
+.project:hover .project-icon {
+    background-color: green;
+}
+
+.project:hover {
+    cursor: pointer;
+}
+
+.project:hover a {
+    color: #f1f1f1;
+}
+
+main {
+    flex: 1 1 auto;
+}
+
+.main-content-wrapper {
+    width: 100%;
+    background-color: white;
+}
+
+.recently-added {
+    font-size: 27px;
+    margin-block-start: auto;
+    margin-block-end: auto;
+    margin-inline-start: auto;
+    margin-inline-end: auto;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.main-content-wrapper div {
+    margin-top: 19px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 64px;
+}
+
+#add-to-do-page-wrapper {
+    /* this should be done as an animation for the background layover */
+    position: absolute;
+    margin: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 1.0;
+    background-color: white;
+    z-index: 2;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-to-do-box {
+    width: 600px;
+    height: 170px;
+    box-shadow: #7a7a7a 0px 4px 20px 0px;
+    border-radius: 9px;
+    outline: none;
+    border: 1px solid #cac9c9;
+}
+
+.add-task-input-box {
+    padding: 0;
+    border: none;
+    background-color: white;
+    color: black;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 20px;
+    margin-top: 15px;
+    margin-left: 15px;
+    position: absolute;
+}
+
+.add-task-input-box:focus {
+    outline: none;
+    border: none;
+}
+
+.schedule-input-box {
+    position: absolute;
+    margin-top: 120px;
+    margin-left: 19px;
+    border-radius: 3px;
+    outline: none;
+    border: 0.5px solid #cac9c9;
+    padding: 7px 5px 7px 8px;
+    -webkit-font-smoothing: antialiased;
+    opacity: 0.8;
+}
+
+.priority-text {
+    position: absolute;
+    margin-left: 237px;
+    margin-top: 127px;
+    color: #4d4d4d;
+}
+
+.priority-wrapper {
+    position: absolute;
+    margin-left: 317px;
+    margin-top: 112px;
+    display: flex;
+    flex-direction: row;
+}
+
+.high-wrapper {
+    padding-left: 20px;
+}
+
+.priority:hover {
+    color: red;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.project-tag-box {
+    position: absolute;
+    margin-left: 425px;
+    margin-top: 128px;
+    width: 28px;
+    height: 17.6px;
+    background-color: black;
+}
+
+.project-tag-box::after {
+    background-color: white;
+    position: absolute;
+    content: "";
+    margin-left: -7px;
+    margin-top: 2px;
+    width: 12.3px;
+    height: 13.4px;
+    transform: rotate(45deg);
+}
+
+.project-tag-box:hover {
+    background-color: orange;
+    cursor: pointer;
+}
+
+.project-title-input-box {
+    position: absolute;
+    margin-left: 468px;
+    margin-top: 121px;
+    width: 107px;
+    height: 17px;
+    background-color: white;
+    border-radius: 3px;
+    outline: none;
+    border: 0.5px solid #cac9c9;
+    padding: 7px 5px 7px 8px;
+    -webkit-font-smoothing: antialiased;
+    opacity: 0.8;
+    font-size: 12px;
+    display: none;
+}
+
+.cancel-add-to-do-item {
+    position: absolute;
+    width: 34px;
+    height: 26px;
+    color: #995555;
+    font-size: 14px;
+    margin-left: 584px;
+    margin-top: 5px;
+    font-weight: 600;
+}
+
+.cancel-add-to-do-item:hover {
+    color: red;
+    cursor: pointer;
+}
+
+#add-to-do-item-button {
+    position: absolute;
+    border: none;
+    background-color: green;
+    color: white;
+    padding: 0;
+    display: block;
+    font-size: 15px;
+    margin-left: 221px;
+    margin-top: 14px;
+    width: 75px;
+    height: 25px;
 }
