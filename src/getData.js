@@ -28,7 +28,16 @@ function toDoItem(toDoData) {
     return false;
 }
 
+function getAllProjects() {
+    let projectTitles = Object.getOwnPropertyNames(localStorage);
+    let projectArray = projectTitles.map((projectTitle) => {
+        return JSON.parse(localStorage.getItem(projectTitle));
+    });
+    return projectArray;
+}
+
 export {
     project,
-    toDoItem
+    toDoItem,
+    getAllProjects
 };
