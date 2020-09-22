@@ -1,7 +1,7 @@
 import {pubSub} from "./pubSub.js";
 import * as getData from "./getData.js";
 
-function toDoItem(toDoData) {
+function toDoItem(toDoData, dontPubSub) {
     let data = getData.toDoItem(toDoData);
     if (data) {
         let projectArray = data.toDoLists;
@@ -14,6 +14,7 @@ function toDoItem(toDoData) {
         let projectTitle = data.title;
         localStorage.setItem(projectTitle, JSON.stringify(data));
         console.log("Deleted to do item");
+        if (dontPubSub) return;
         pubSub.publish("deleted-to-do-item", toDoData);
     }
     else {
@@ -36,6 +37,16 @@ function project(projectData) {
         pubSub.publish("failed-to-delete-project-data", projectData);
     }
 }
+
+function checkForFinalToDoItem(toDoData) {
+    let toDoProjectData = getData.project(toDoData.projectTitle);
+    let toDoArray = toDoProjectData.toDoLists;
+    if (toDoArray.length == 0) {
+        project(toDoProjectData);
+    }
+}
+
+pubSub.subscribe("deleted-to-do-item", checkForFinalToDoItem);
 
 export {
     toDoItem,

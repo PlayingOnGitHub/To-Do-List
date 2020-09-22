@@ -5,17 +5,29 @@ import * as saveData from "./saveData.js";
 
 function toDoItem(toDoData, oldData) {
     let newTitle = toDoData.title;
+    let newDescription = toDoData.description;
+    let newDueDate = toDoData.dueDate;
+    let newPriority = toDoData.priority;
     let oldTitle = oldData.title;
+    let oldDescription = oldData.description;
+    let oldDueDate = oldData.dueDate;
+    let oldPriority = oldData.priority;
+
     let projectData = getData.project(toDoData);
     let projectTitle = projectData.title;
     if (!projectData) {
         console.log("No project data");
+        pubSub.publish("failed-to-update-to-do-item");
+        return 0;
+    }
+    if (newTitle == oldTitle && newDescription == oldDescription && newDueDate == oldDueDate && newPriority == oldPriority) {
+        pubSub.publish("nothing-to-update", toDoData);
         return 0;
     }
     if (oldTitle != newTitle) {
         /* first go ahead and delete the old to do list.. filter it out of toDoLists array I think */
-        deleteData.toDoItem(oldData); /* error is here */
-        saveData.toDoItem(toDoData);
+        deleteData.toDoItem(oldData, true);
+        let newToDoObject = saveData.toDoItem(toDoData);
         console.log("Updated");
         return 1;
     }
@@ -30,11 +42,11 @@ function toDoItem(toDoData, oldData) {
         projectData.toDoLists[index] = toDoData;
         console.log("Updated");
     } else {
+        console.log(projectData);
         projectData.toDoLists.push(toDoData);
         console.log("Added To Do")
     }
-
-    saveData.project(projectData);
+    saveData.overrideProjectData(projectData);
     
     /* find the current toDoItem in toDoLists array I think and update the toDoItem in toDoLists array and then push that 
        data back up using setItem. Must have old data */

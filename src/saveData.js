@@ -31,7 +31,15 @@ function project(projectData) {
     }
 }
 
+function overrideProjectData(projectData) {
+    let projectTitle = projectData.title;
+    localStorage.setItem(projectTitle, JSON.stringify(projectData) );
+    console.log("Saved project");
+    pubSub.publish("updated-project-data", projectData);
+}
+
 export {
     toDoItem,
-    project
+    project,
+    overrideProjectData
 }

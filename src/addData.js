@@ -20,9 +20,10 @@ let projectInterface = (projectData) => ({
     update: () => projectData.update()
 });
 
-let toDoItem = (title, dueDate, priority, projectTitle) => {
+let toDoItem = (title, description, dueDate, priority, projectTitle) => {
     let myProperties = {
         title,
+        description,
         dueDate,
         priority,
         projectTitle,

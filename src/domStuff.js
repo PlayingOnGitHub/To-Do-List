@@ -3,7 +3,9 @@ import * as create from "./create.js";
 import * as addData from "./addData.js";
 import * as updateData from "./updateData.js";
 import * as getData from "./getData.js";
+import * as deleteData from "./deleteData.js";
 import datepicker from "js-datepicker";
+import * as dropDown from "./dropDown.js";
 
 function loadStartingPageHTML() {
     let content = document.getElementById("content");
@@ -28,7 +30,6 @@ function loadStartingPageHTML() {
             let main = belowHeaderWrapper.appendChild(create.element("main"));
                 let mainContentWrapper = main.appendChild(create.element("div", "class", "main-content-wrapper"));
                     let recentlyAdded = mainContentWrapper.appendChild(create.element("h2", "class", "recently-added"));
-                    recentlyAdded.textContent = "Recently Added";
 }
 
 function loadAddToDoPageHTML() {
@@ -38,10 +39,12 @@ function loadAddToDoPageHTML() {
                 let cancelAddToDoItem = addToDoBox.appendChild(create.element("div", "class", "cancel-add-to-do-item", "", "id", "cancel-add-to-do-item"));
                     cancelAddToDoItem.textContent = "X";
                 let addTaskInputBox = addToDoBox.appendChild(create.element("input", "class", "add-task-input-box", "", "id", "add-task-input-box"));
-                    addTaskInputBox.placeholder = "Add a task";
+                    addTaskInputBox.placeholder = "Add task";
                     addTaskInputBox.type = "text";
                     addTaskInputBox.maxlength = "20";
-                let addToDoItemButton = addToDoBox.appendChild(create.element("button", "id", "add-to-do-item-button"));
+                let addDescription = addToDoBox.appendChild(create.element("textarea", "class", "add-description", "", "id", "description"));
+                    addDescription.placeholder = "Add description";
+                let addToDoItemButton = addToDoBox.appendChild(create.element("button", "id", "add-to-do-item-button", "", "class", "add-to-do-item-button"));
                     addToDoItemButton.textContent = "Add Task";
                 let scheduleInputBox = addToDoBox.appendChild(create.element("input", "class", "schedule-input-box", "", "id", "schedule-input-box"));
                     scheduleInputBox.type = "text";
@@ -69,13 +72,133 @@ function addLoadStartingPageListeners() {
 }
 
 function renderToDoItems() {
-    let toDoItemsWrapper = this;
-    if ( toDoItemsWrapper.style.display == "" || toDoItemsWrapper.style.display == "block") {
-        toDoItemsWrapper.style.display = "none";
+    /* this will change application state */
+    let bindedMaterials = this;
+    let toDoItemsWrapper = this["toDoItemsWrapper"];
+    let projectIconWrapper = this["projectIconWrapper"];
+
+    let projectData = JSON.parse(projectIconWrapper.id)
+    if ( toDoItemsWrapper.style.display == "" || toDoItemsWrapper.style.display == "none") {
+        toDoItemsWrapper.style.display = "block";
+        pubSub.publish("show-project-data", projectData ); /* where data is project data */
     }
     else {
-        toDoItemsWrapper.style.display = "block";
+        toDoItemsWrapper.style.display = "none";
+        pubSub.publish("remove-dropdown-data", projectData);
     }
+}
+
+function getToDoItemFormData() {
+    let addTaskInputBox = document.getElementById("add-task-input-box");
+    let scheduleInputBox = document.getElementById("schedule-input-box");
+    let lowerPriority = document.getElementById("low");
+    let highPriority = document.getElementById("high");
+    let projectTitleInputBox = document.getElementById("project-title-input-box");
+    let addDescriptionTextArea = document.getElementById("description");
+
+    let toDoItemTitle = addTaskInputBox.value;
+    let toDoItemDueDate = scheduleInputBox.value;
+    let toDoItemPriority = "";
+    let toDoItemDescription = addDescriptionTextArea.value;
+
+    if (lowerPriority.style.color == "red") {
+        toDoItemPriority = "low";
+    }
+    else if (highPriority.style.color == "red") {
+        toDoItemPriority = "high";
+    }
+    let toDoItemProjectTitle = projectTitleInputBox.value;
+    let formData = {
+        title: toDoItemTitle,
+        dueDate: toDoItemDueDate,
+        priority: toDoItemPriority,
+        description: toDoItemDescription,
+        projectTitle: toDoItemProjectTitle
+    }
+
+    return formData;
+
+}
+
+function addToDoItem() {
+    let formData = getToDoItemFormData();
+    let toDoItemProjectTitle = formData.projectTitle;
+    let toDoItemDescription = formData.description;
+    let toDoItemDueDate = formData.dueDate;
+    let toDoItemPriority = formData.priority;
+    let toDoItemTitle = formData.title;
+
+    if (!getData.project(toDoItemProjectTitle)) {
+        let newProject = addData.project(toDoItemProjectTitle);
+        newProject.save();
+    }
+
+    let newToDo = addData.toDoItem(toDoItemTitle, toDoItemDescription, toDoItemDueDate, toDoItemPriority, toDoItemProjectTitle);
+    newToDo.save();
+}
+
+function addToDoItemButtonListeners() {
+    let addToDoItemButton = document.getElementById("add-to-do-item-button");
+    addToDoItemButton.addEventListener("click", addToDoItem, true );
+
+    let cancelAddToDoItemButton = document.getElementById("cancel-add-to-do-item");
+    cancelAddToDoItemButton.addEventListener("click", returnHome, true);
+}
+
+function updateToDoItemButtonListeners(selectedToDoItemData) {
+    let addToDoItemButton = document.getElementById("add-to-do-item-button");
+    addToDoItemButton.addEventListener("click", updateToDoItem.bind(selectedToDoItemData), true );
+
+    let cancelAddToDoItemButton = document.getElementById("cancel-add-to-do-item");
+    cancelAddToDoItemButton.addEventListener("click", returnHome, true);
+}
+
+function mixinEditToDoPage(selectedToDoItemData) {
+    let updateToDoItemButton = document.getElementById("add-to-do-item-button");
+    updateToDoItemButton.textContent = "Update task";
+    updateToDoItemButton.className = "update-to-do-item-button";
+    let projectTagBox = document.getElementById("project-tag-box");
+    projectTagBox.style.display = "none";
+    let projectTitleInputBox = document.getElementById("project-title-input-box");
+    projectTitleInputBox.value = selectedToDoItemData.projectTitle;
+    let description = document.getElementById("description");
+    description.value = selectedToDoItemData.description;
+    let scheduleInputBox = document.getElementById("schedule-input-box");
+    scheduleInputBox.value = selectedToDoItemData.dueDate;
+    let priorityLevel = selectedToDoItemData.priority;
+    if (priorityLevel == "low") {
+        let priority1 = document.getElementById("low");
+        priority1.style.color = "red";
+        priority1.style.fontWeight = "bold";
+    }
+    else if (priorityLevel == "high") {
+        let priority2 = document.getElementById("high");
+        priority2.style.color = "red";
+        priority2.style.fontWeight = "bold";
+    }
+    let addTaskInputBox = document.getElementById("add-task-input-box");
+    addTaskInputBox.value = selectedToDoItemData.title;
+}
+
+function updateToDoItem() {
+    let toDoData = getToDoItemFormData();
+    let oldData = this;
+    updateData.toDoItem(toDoData, oldData);
+}
+
+function editToDoItem() {
+    let selectedToDoItemData = JSON.parse(this.id);
+    loadAddToDoPageHTML();
+    /* I know. Implements switching title to orange and black 
+    but I'm just ready for the next thing.*/
+    makeAddToDoPageInteractive(); 
+    mixinEditToDoPage(selectedToDoItemData);
+    updateToDoItemButtonListeners(selectedToDoItemData);
+}
+
+function deleteToDoItem() {
+    let toDoItem = this;
+    deleteData.toDoItem(toDoItem);
 }
 
 function renderProjects() {
@@ -91,23 +214,52 @@ function renderProjects() {
     projectArray.forEach( (projectItem, currentIndex) => {
         /* display project info and title here */
         let projectDiv = projectsWrapper.appendChild(create.element("div", "class", "project"));
-            let projectIconWrapper = projectDiv.appendChild(create.element("div", "class", "project-icon-wrapper"));
+            let projectIconWrapper = projectDiv.appendChild(create.element("div", "class", "project-icon-wrapper", "", "id", JSON.stringify(projectItem)));
                 let projectIcon = projectIconWrapper.appendChild(create.element("div", "class", "project-icon", "", "id", currentIndex));
             let projectTitleLink = projectDiv.appendChild(create.element("a", "class", "project-link", "#"));
             projectTitleLink.textContent = projectItem.title;
-            let toDoItemsWrapper = projectDiv.appendChild(create.element("div", "class", "to-do-items-wrapper", "", "id", currentIndex));
+            let toDoItemsWrapper = projectDiv.appendChild(create.element("div", "class", "to-do-items-wrapper", "", "id", `to-do-${currentIndex}`));
         /* end of project info and title stuff */
 
 
         let toDoLists = projectItem.toDoLists;
         toDoLists.forEach( (toDoItem) => {
-            /* put hidden to do item drop down stuff here on click */
-            console.log(toDoItem);
+            let toDoLinkWrapper = toDoItemsWrapper.appendChild(create.element("div", "class", "to-do-link-wrapper"));
+                let toDoLink = toDoLinkWrapper.appendChild(create.element("p", "class", "to-do-link", "#", "id", JSON.stringify(toDoItem)));
+                toDoLink.textContent = toDoItem.title;
+                toDoLink.addEventListener("click", editToDoItem.bind(toDoLink), true);
+            /* put delete button here! */
+                let deleteButton = toDoLinkWrapper.appendChild(create.element("div", "class", "delete-button"));
+                deleteButton.addEventListener("click", deleteToDoItem.bind(toDoItem), true );
+                    let checkLineOne = deleteButton.appendChild(create.element("div", "class", "check-line-one"));
+                    let checkLineTwo = deleteButton.appendChild(create.element("div", "class", "check-line-two"));
+
         });
 
-        projectIconWrapper.addEventListener("click", renderToDoItems.bind(toDoItemsWrapper), true );
+        projectIconWrapper.addEventListener("click", renderToDoItems.bind({toDoItemsWrapper, projectIconWrapper}), true );
 
     });
+    renderDropDowns();
+}
+
+function renderDropDowns() {
+    /* keep drop down in a style of display if projectName exists */
+    let dropDownProjectTitles = dropDown.getActiveDropDowns();
+    let dropDownElements = document.querySelectorAll(".project-icon-wrapper");
+    dropDownElements = [...dropDownElements];
+    /* for each project name on the actual page */
+    dropDownElements.forEach( (elementItem, currentIndex) => {
+        let projectDataFromPage = JSON.parse(elementItem.id);
+        let projectTitleFromPage = projectDataFromPage.title;
+        /* is the project title on the page the same as the project title already saved? */
+        /* and for each project title saved, is the project title (saved) the same as the project title from page? */
+        let doesItExist = dropDownProjectTitles.findIndex( (dropDownProjectTitle) => dropDownProjectTitle == projectTitleFromPage );
+        if (doesItExist != -1) {
+            let toDoItemsWrapper = document.getElementById("to-do-"+currentIndex);
+            toDoItemsWrapper.style.display = "block";
+        }
+    });
+
 }
 
 function loadStartingPage() {
@@ -190,43 +342,6 @@ function makeAddToDoPageInteractive() {
         projectTagBox.addEventListener("click", doProjectStuff.bind(projectTagBox), true);
     }
 
-    function checkAddToDoItemFormData() {
-        let addTaskInputBox = document.getElementById("add-task-input-box");
-        let scheduleInputBox = document.getElementById("schedule-input-box");
-        let lowerPriority = document.getElementById("low");
-        let highPriority = document.getElementById("high");
-        let projectTitleInputBox = document.getElementById("project-title-input-box");
-        
-        let toDoItemTitle = addTaskInputBox.value;
-        let toDoItemDueDate = scheduleInputBox.value;
-        let toDoItemPriority = "";
-        if (lowerPriority.style.color == "red") {
-            toDoItemPriority = "low";
-        }
-        else if (highPriority.style.color == "red") {
-            toDoItemPriority = "high";
-        }
-        let toDoItemProjectTitle = projectTitleInputBox.value;
-        if (!getData.project(toDoItemProjectTitle)) {
-            let newProject = addData.project(toDoItemProjectTitle);
-            newProject.save();
-        }
-
-        let newToDo = addData.toDoItem(toDoItemTitle, toDoItemDueDate, toDoItemPriority, toDoItemProjectTitle);
-        newToDo.save();
-        console.log(JSON.parse(localStorage.getItem(toDoItemProjectTitle)));
-    
-
-    }
-
-    function addToDoItemButtonListeners() {
-        let addToDoItemButton = document.getElementById("add-to-do-item-button");
-        addToDoItemButton.addEventListener("click", checkAddToDoItemFormData, true );
-
-        let cancelAddToDoItemButton = document.getElementById("cancel-add-to-do-item");
-        cancelAddToDoItemButton.addEventListener("click", returnHome, true);
-    }
-    addToDoItemButtonListeners();
     addProjectTagBoxListeners();
     addPriorityClickListeners();
 }
@@ -234,17 +349,8 @@ function makeAddToDoPageInteractive() {
 function loadAddToDoPage() {
     loadAddToDoPageHTML();
     makeAddToDoPageInteractive();
+    addToDoItemButtonListeners();
 }
-
-function renderCurrentProject(projectInformation) {
-    /* display to do's and their details for this project... project name.. etc... 
-       todos could have a brief description across a single line.. stacked vertically */
-       
-}
-
-function displayToDoListDropDownFromSelectedProject(dataFromProjectThatWasClicked) {
-
-};
 
 function returnHome(someData) {
     renderProjects();
@@ -253,6 +359,10 @@ function returnHome(someData) {
 }
 
 pubSub.subscribe("saved-to-do-item", returnHome);
+pubSub.subscribe("updated-project-data", returnHome );
+pubSub.subscribe("nothing-to-update", returnHome);
+pubSub.subscribe("deleted-to-do-item", renderProjects);
+pubSub.subscribe("deleted-project-data", renderProjects);
 
 /* subscribe to stuff down here... and add the functions to run as a result of certain events firing.. like addToDoList.. addProject..etc
    etc etc.. updateToDoList... deleteData.data... etc etc etc */
