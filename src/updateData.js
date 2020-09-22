@@ -1,7 +1,7 @@
-import pubSub from './pubSub';
-import * as getData from './getData';
-import * as deleteData from './deleteData';
-import * as saveData from './saveData';
+import pubSub from "./pubSub";
+import * as getData from "./getData";
+import * as deleteData from "./deleteData";
+import * as saveData from "./saveData";
 
 function toDoItem(toDoData, oldData) {
   const newTitle = toDoData.title;
@@ -15,19 +15,24 @@ function toDoItem(toDoData, oldData) {
 
   const projectData = getData.project(toDoData);
   if (!projectData) {
-    console.log('No project data');
-    pubSub.publish('failed-to-update-to-do-item');
+    console.log("No project data");
+    pubSub.publish("failed-to-update-to-do-item");
     return 0;
   }
-  if (newTitle == oldTitle && newDescription == oldDescription && newDueDate == oldDueDate && newPriority == oldPriority) {
-    pubSub.publish('nothing-to-update', toDoData);
+  if (
+    newTitle == oldTitle &&
+    newDescription == oldDescription &&
+    newDueDate == oldDueDate &&
+    newPriority == oldPriority
+  ) {
+    pubSub.publish("nothing-to-update", toDoData);
     return 0;
   }
   if (oldTitle !== newTitle) {
     /* first go ahead and delete the old to do list.. filter it out of toDoLists array I think */
     deleteData.toDoItem(oldData, true);
     saveData.toDoItem(toDoData);
-    console.log('Updated');
+    console.log("Updated");
     return 1;
   }
   const toDoArray = projectData.toDoLists;
@@ -40,20 +45,15 @@ function toDoItem(toDoData, oldData) {
   });
   if (index !== -1) {
     projectData.toDoLists[index] = toDoData;
-    console.log('Updated');
+    console.log("Updated");
   } else {
     console.log(projectData);
     projectData.toDoLists.push(toDoData);
-    console.log('Added To Do');
+    console.log("Added To Do");
   }
   saveData.overrideProjectData(projectData);
 }
 
-function project(projectData) {
+function project(projectData) {}
 
-}
-
-export {
-  toDoItem,
-  project,
-};
+export { toDoItem, project };

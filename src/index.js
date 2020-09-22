@@ -1,3 +1,3 @@
-import loadStartingPage from './domStuff';
+import loadStartingPage from "./domStuff";
 
 loadStartingPage();

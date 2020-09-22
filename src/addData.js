@@ -1,20 +1,20 @@
-import pubSub from './pubSub';
-import * as saveData from './saveData';
-import * as deleteData from './deleteData';
-import * as updateData from './updateData';
+import pubSub from "./pubSub";
+import * as saveData from "./saveData";
+import * as deleteData from "./deleteData";
+import * as updateData from "./updateData";
 
 /* this is just me practicing higher level concepts.
    Most of this isn't really needed */
 
 const toDoInterface = (toDoData) => ({
-  type: 'to-do-interface',
+  type: "to-do-interface",
   save: () => toDoData.save(),
   delete: () => toDoData.delete(),
   update: () => toDoData.update(),
 });
 
 const projectInterface = (projectData) => ({
-  type: 'project-interface',
+  type: "project-interface",
   save: () => projectData.save(),
   delete: () => projectData.delete(),
   update: () => projectData.update(),
@@ -27,7 +27,7 @@ const toDoItem = (title, description, dueDate, priority, projectTitle) => {
     dueDate,
     priority,
     projectTitle,
-    type: 'to-do-item',
+    type: "to-do-item",
   };
   const storageMixins = {
     save() {
@@ -47,7 +47,7 @@ const toDoItem = (title, description, dueDate, priority, projectTitle) => {
 const project = (title) => {
   const myProperties = {
     title,
-    type: 'project',
+    type: "project",
     toDoLists: [],
   };
   const storageMixins = {
@@ -65,7 +65,4 @@ const project = (title) => {
   return Object.assign(Object.create(implemented), myProperties);
 };
 
-export {
-  toDoItem,
-  project,
-};
+export { toDoItem, project };

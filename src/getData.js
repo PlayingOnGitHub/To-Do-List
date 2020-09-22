@@ -1,5 +1,8 @@
 function project(someData) {
-  const projectTitle = someData.projectTitle || someData.title || someData; /* must be in this order of or statements or my function breaks */
+  const projectTitle =
+    someData.projectTitle ||
+    someData.title ||
+    someData; /* must be in this order of or statements or my function breaks */
   const data = localStorage.getItem(projectTitle);
   if (data) {
     const decryptedData = JSON.parse(data);
@@ -28,12 +31,10 @@ function toDoItem(toDoData) {
 
 function getAllProjects() {
   const projectTitles = Object.getOwnPropertyNames(localStorage);
-  const projectArray = projectTitles.map((projectTitle) => JSON.parse(localStorage.getItem(projectTitle)));
+  const projectArray = projectTitles.map((projectTitle) =>
+    JSON.parse(localStorage.getItem(projectTitle))
+  );
   return projectArray;
 }
 
-export {
-  project,
-  toDoItem,
-  getAllProjects,
-};
+export { project, toDoItem, getAllProjects };
