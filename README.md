@@ -1,2 +1,2 @@
-ToDo Project created with Webpack, Babel, and pubSub pattern.
+ToDo Project created with Webpack, Babel, and Pub-Sub pattern.
 ------------------------------------------------------------
